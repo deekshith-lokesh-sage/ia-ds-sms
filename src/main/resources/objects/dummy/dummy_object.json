@@ -1,0 +1,327 @@
+{
+    "global": false,
+    "readonly": false,
+    "renameable": true,
+    "table": "vendor",
+    "autoincrement": "key",
+    "showhierarchy": true,
+    "auditcolumns": true,
+    "vid": "id",
+    "module": "ap",
+    "printas": "Dummy",
+    "pluralprintas": "Dummies",
+    "allowDDS": true,
+    "description": "List of Dummies.",
+
+    "nexus": {
+        "parent": {
+            "object": "dummy",
+            "relation": "MANY2ONE",
+            "field": "parentKey",
+            "printas": "Parent Dummy"
+        },
+        "contactInfo": {
+            "object": "contact",
+            "relation": "MANY2ONE",
+            "field": "contactInfoKey",
+            "printas": "Primary Contact"
+        }
+    },
+
+    "object": [
+        "key",
+        "id",
+        "name",
+        "status",
+        "totalDue",
+        "comments",
+        "taxId",
+        "creditLimit",
+        "discount",
+        "whenCreated",
+        "whenModified",
+        "createdBy",
+        "modifiedBy",
+
+        "contactInfoKey",
+        "contactInfo.id",
+        "contactInfo.companyName",
+        "contactInfo.firstName",
+        "contactInfo.lastName",
+        "contactInfo.initial",
+        "contactInfo.printAs",
+        "contactInfo.taxable",
+
+        "parentKey",
+        "parent.id",
+        "parent.name"
+    ],
+    "schema": {
+        "key": "record#",
+        "id": "vendorid",
+        "name": "name",
+        "status": "status",
+        "totalDue": "totaldue",
+        "comments": "comments",
+        "taxId": "taxId",
+        "creditLimit": "creditlimit",
+        "discount": "discount",
+        "whenCreated": "whencreated",
+        "whenModified": "whenmodified",
+        "createdBy": "createdby",
+        "modifiedBy": "modifiedby",
+
+        "parentKey": "parentkey",
+        "contactInfoKey": "contactkey"
+    },
+    "sqlmarkupfields": [
+        "whenCreated",
+        "whenModified"
+    ],
+    "fieldinfo": [
+        {
+            "path": "key",
+            "fullname": "Record number",
+            "desc": "Record Number",
+            "readonly": true,
+            "id": 1,
+            "type": {
+                "ptype": "integer",
+                "type": "integer",
+                "size": 8,
+                "maxlength": 8,
+                "format": "\/^[0-9]{1,15}$\/"
+            }
+        },
+        {
+            "fullname": "Dummy ID",
+            "showInGroup": true,
+            "desc": "Unique Identifier",
+            "required": true,
+            "path": "id",
+            "renameable": true,
+            "id": 2,
+            "gbParent": true,
+            "type": {
+                "ptype": "text",
+                "type": "text",
+                "maxlength": 20,
+                "format": "\/^([\\w\\s_\\.\\\/]([-]{0,1})){1,20}$\/"
+            }
+        },
+        {
+            "fullname": "Name",
+            "required": true,
+            "showInGroup": true,
+            "desc": "Name of a Dummy",
+            "path": "name",
+            "id": 3,
+            "gbParent": true,
+            "type": {
+                "ptype": "text",
+                "type": "text",
+                "maxlength": 100,
+                "format": "\/^.{1,100}$\/"
+            }
+        },
+        {
+            "fullname": "Status",
+            "required": false,
+            "showInGroup": true,
+            "default": "active",
+            "desc": "Active\/Inactive",
+            "path": "status",
+            "id": 4,
+            "type": {
+                "ptype": "enum",
+                "type": "text",
+                "validlabels": [
+                    "Active",
+                    "Inactive"
+                ],
+                "validvalues": [
+                    "active",
+                    "inactive"
+                ],
+                "_validivalues": [
+                    "T",
+                    "F"
+                ]
+            }
+        },
+        {
+            "fullname": "Total Due",
+            "required": false,
+            "showInGroup": true,
+            "desc": "Total due",
+            "path": "totalDue",
+            "id": 5,
+            "type": {
+                "ptype": "currency",
+                "type": "decimal",
+                "maxlength": 20,
+                "format": "\/^-{0,1}[0-9]*\\.{0,1}[0-9]{0,2}$/"
+            }
+        },
+        {
+            "fullname": "Comments",
+            "required": false,
+            "desc": "Comments",
+            "path": "comments",
+            "id": 6,
+            "showInGroup": true,
+            "type": {
+                "ptype": "multitext",
+                "type": "text",
+                "maxlength": 200
+            }
+        },
+        {
+            "fullname": "Tax Id",
+            "required": false,
+            "desc": "Tax Identification Number",
+            "path": "taxId",
+            "id": 7,
+            "showInGroup": true,
+            "type": {
+                "ptype": "text",
+                "type": "text",
+                "maxlength": 20
+            }
+        },
+        {
+            "fullname": "Credit Limit",
+            "required": false,
+            "desc": "Credit Limit",
+            "path": "creditLimin",
+            "id": 8,
+            "showInGroup": true,
+            "type": {
+                "ptype": "currency",
+                "type": "decimal",
+                "maxlength": 20,
+                "format": "\/^-{0,1}[0-9]*\\.{0,1}[0-9]{0,2}$/"
+            }
+        },
+        {
+            "fullname": "Discount",
+            "required": false,
+            "desc": "Discount",
+            "path": "discount",
+            "id": 9,
+            "showInGroup": true,
+            "type": {
+                "ptype": "decimal",
+                "type": "decimal",
+                "maxlength": 20,
+                "format": "\/^-{0,1}[0-9]*\\.{0,1}[0-9]*$/"
+            }
+        },
+        {
+            "path": "parentKey",
+            "derived": true,
+            "idw": false,
+            "fullname": "Parent key",
+            "id": 10,
+            "type": {
+                "type": "integer"
+            }
+        },
+        {
+            "path": "contactInfoKey",
+            "derived": true,
+            "idw": false,
+            "fullname": "Contact key",
+            "id": 10,
+            "type": {
+                "type": "integer"
+            }
+        },
+        {
+            "path": "whenCreated",
+            "fullname": "When created",
+            "desc": "timestamp marking last time this was created.",
+            "hidden": true,
+            "readonly": true,
+            "noapiadd": true,
+            "noapiset": true,
+            "id": 970,
+            "type": {
+                "type": "timestamp",
+                "maxlength": 22,
+                "size": 22
+            }
+        },
+        {
+            "path": "whenModified",
+            "fullname": "When modified",
+            "desc": "timestamp marking last time this was changed.",
+            "hidden": true,
+            "readonly": true,
+            "noapiadd": true,
+            "noapiset": true,
+            "id": 969,
+            "type": {
+                "type": "timestamp",
+                "maxlength": 22,
+                "size": 22
+            }
+        },
+        {
+            "path": "createdBy",
+            "fullname": "Created by",
+            "desc": "User who created this.",
+            "hidden": true,
+            "readonly": true,
+            "noapiadd": true,
+            "noapiset": true,
+            "id": 971,
+            "type": {
+                "ptype": "ptr",
+                "type": "integer",
+                "entity": "uipick"
+            }
+        },
+        {
+            "path": "modifiedBy",
+            "fullname": "Modified by",
+            "desc": "User who modified this.",
+            "hidden": true,
+            "readonly": true,
+            "noapiadd": true,
+            "noapiset": true,
+            "id": 972,
+            "type": {
+                "ptype": "ptr",
+                "type": "integer",
+                "entity": "userinfo"
+            }
+        }
+
+    ],
+
+    "customerp": {
+        "AllowCF": true,
+        "SLTypes": [
+            "C",
+            "V",
+            "F",
+            "W"
+        ],
+        "SLEvents": [
+            "add",
+            "set",
+            "addset",
+            "delete",
+            "click"
+        ]
+    },
+    "platformProperties": {
+        "isGLDimension": true,
+        "lookupTemplate": "{!CLASSID!}--{!NAME!}"
+    },
+    "nameFields": [
+        "name",
+        "id"
+    ]
+}

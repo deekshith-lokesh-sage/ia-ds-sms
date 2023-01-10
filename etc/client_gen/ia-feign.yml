@@ -1,0 +1,23 @@
+generatorName: spring
+outputDir: generated_client/
+library: spring-cloud
+embeddedTemplateDir: "feign"
+templateDir: "feign"
+additionalProperties:
+  booleanGetterPrefix: is
+  hideGenerationTimestamp: "true"
+  useReflectionEqualsHashCode: "false"
+  useJacksonNullable: "false"
+  dateLibrary: java8
+  useRuntimeException: true
+  performBeanValidation: false
+  useBeanValidation: true
+  basePackage: com.intacct.ds.client
+  modelPackage: com.intacct.ds.client.model
+  apiPackage: com.intacct.ds.client.api
+  configPackage: com.intacct.ds.client.config
+  openApiNullable: false
+  skipDefaultInterface: true
+
+
+

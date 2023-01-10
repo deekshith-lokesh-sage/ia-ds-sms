@@ -1,0 +1,45 @@
+HELP.md
+/.mvn/wrapper/maven-wrapper.jar
+target/
+logs/
+tmp/
+!src/main/**/target/
+!src/test/**/target/
+version.txt
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.ipr
+*.iml
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!src/main/**/build/
+!src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### Maven auth manipulation ###
+bindings/maven/settings.xml
+
+### Open API client generation ###
+**/openapitools.json
+/etc/client_gen/generated_client/**
+!/etc/client_gen/generated_client/.openapi-generator-ignore
+ia-resources/
