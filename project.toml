@@ -1,0 +1,6 @@
+[project]
+id = "ia-ds-template" # machine readable
+name = "Intacct Domain Service Template" # human readable
+authors = ["Sage Intacct"]
+source-url = "https://github.com:Intacct/ia-ds-template.git"
+

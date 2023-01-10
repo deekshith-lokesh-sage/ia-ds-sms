@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: ${SANDBOX_NS:ia}-ds-template
+
+com:
+  intacct:
+    version: '@project.version@'
+    ds:
+      # The following is a sample of how to define the details of the services which this service interacts with.
+      # If defaults are used, the service doesn't need to define entries for each other service because their config
+      # settings are built by the core framework. If explicit settings are needed, use this model
+      ia-ds-app1:
+        url: http://ia-ds-app1-svc:8090/ia-ds-app1/${SANDBOX_NS:ia}
+      ia-ds-fa:
+        url: http://ia-ds-fa-svc:8090/ia-ds-fa/${SANDBOX_NS:ia}
+      php-service:
+        url: ${NEXTGEN_REMOTE_SERVER:https://dev174.intacct.com/users/james.wang/projects.oauth2}
