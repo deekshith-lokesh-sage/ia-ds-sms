@@ -1,0 +1,213 @@
+name: 'Helper: image build, push and chart update'
+on:
+  repository_dispatch:
+    types: [create-image]
+#  push:
+#    tags:
+#      - '*'
+
+jobs:
+  image-build-push:
+    runs-on: ubuntu-latest
+    env:
+      JF_ARTIFACTORY_1: ${{ secrets.JF_ARTIFACTORY_SERVER_1 }}
+      IA_GH_REPO_NAME: ${{ github.event.repository.name }}
+    steps:
+      - name: Echo Tag to be built
+        run: |
+          echo "${{ github.event.client_payload.ref }}"
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          path: main
+          ref: ${{ github.event.client_payload.ref }}
+
+      - name: Request a temporary token for "ia-ds-bot"
+        id: ia_ds_bot_token
+        uses: machine-learning-apps/actions-app-token@0.21
+        with:
+          APP_PEM: ${{ secrets.IA_DS_BOT_APP_PEM }}
+          APP_ID: ${{ secrets.IA_DS_BOT_APP_ID }}
+
+      - name: Save the ia-ds-bot token in the current workflow's environment inside IA_DS_BOT_TOKEN variable
+        run: echo "IA_DS_BOT_TOKEN=${{ steps.ia_ds_bot_token.outputs.app_token }}" >> $GITHUB_ENV
+
+      - name: Checkout ia-ds-utils repo
+        uses: actions/checkout@v3
+        with:
+          repository: intacct/ia-ds-utils
+          ref: 'main'
+          path: ia-ds-utils
+          token: ${{ env.IA_DS_BOT_TOKEN }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.DEV_AWS_ECR_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.DEV_AWS_ECR_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Install Skaffold
+        run: |
+          cd ~/
+          curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64 && sudo install skaffold /usr/local/bin/
+          skaffold config set --global collect-metrics false
+
+      - name: Install helm
+        uses: azure/setup-helm@v3
+        id: install
+
+      - name: Install utilities
+        run: |
+          sudo apt-get install -y jq
+          curl -sSL https://install.hclq.sh |bash
+
+      - name: maven-settings-xml-action
+        uses: whelk-io/maven-settings-xml-action@v20
+        with:
+          repositories: >
+            [
+              {
+                "id": "central",
+                "name": "ia-release",
+                "url": "https://intacct.jfrog.io/artifactory/ia-release",
+                "snapshots": {
+                  "enabled": "false"
+                }
+              },
+              {
+                "id": "snapshots",
+                "name": "ia-snapshot",
+                "url": "https://intacct.jfrog.io/artifactory/ia-snapshot"
+              }
+            ]
+          plugin_repositories: >
+            [
+              {
+                "id": "central",
+                "name": "plugins-release",
+                "url": "https://intacct.jfrog.io/artifactory/plugins-release",
+                "snapshots": {
+                  "enabled": "false"
+                }
+              },
+              {
+                "id": "snapshots",
+                "name": "plugins-snapshot",
+                "url": "https://intacct.jfrog.io/artifactory/plugins-snapshot"
+              }
+            ]
+          servers: >
+            [
+              {
+                 "id": "central",
+                 "username": "ia-ds-deploy-ro",
+                 "password": "${{ secrets.JF_DS_DEPLOY_RO_PASSWORD }}"
+              },
+              {
+                "id": "snapshots",
+                "username": "ia-ds-deploy-ro",
+                "password": "${{ secrets.JF_DS_DEPLOY_RO_PASSWORD }}"
+               }
+            ]
+      - name: Helm repo add
+        run: |
+          helm repo add ia-helm https://intacct.jfrog.io/artifactory/ia-helm/ --username=ia-ds-deploy-ro --password=${{ secrets.JF_DS_DEPLOY_RO_PASSWORD }}
+
+      - name: Docker login (ECR)
+        run: |
+          aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 827126933480.dkr.ecr.us-west-2.amazonaws.com/$IA_GH_REPO_NAME
+
+      - name: Bootstrap buildpack settings
+        run: |
+          cd main
+          #first step just builds and pushes images
+          ../ia-ds-utils/bin/bootstrap.sh
+          mkdir -p tmp
+
+      - name: Debug - show if there are local changes
+        run: |
+          cd main
+          git status
+
+      - name: Skaffold build, push, and render values
+        run: |
+          cd main
+          ../ia-ds-utils/bin/gen-skaffold-yaml.sh
+          skaffold build
+          skaffold build -q --dry-run > $GITHUB_WORKSPACE/main/tmp/built_images.json
+          ../ia-ds-utils/bin/gen_images_values.sh $GITHUB_WORKSPACE/main/tmp/built_images.json
+          # output: ./main/tmp/helm-values.yaml
+
+      - name: Checkout do-applications repo
+        uses: actions/checkout@v3
+        with:
+          repository: intacct/do-applications
+          ref: 'main'
+          path: do-applications
+          token: ${{ env.IA_DS_BOT_TOKEN }}
+
+      - name: Checkout CI branch or create if it doesn't exist
+        id: checkout-ci
+        run: |
+          cd $GITHUB_WORKSPACE/do-applications
+          echo "$IA_GH_REPO_NAME 130"
+          EXISTS=$(git ls-remote origin ci-$IA_GH_REPO_NAME)
+          echo "branch ci-$IA_GH_REPO_NAME: $EXISTS"
+          if [ -z "$EXISTS" ]; then
+            echo "BRANCH_EXISTS=false" >> $GITHUB_ENV
+          else
+            git fetch
+            git checkout ci-$IA_GH_REPO_NAME
+          fi
+
+      - name: Copy values and check helm chart version
+        run: |
+          cd $GITHUB_WORKSPACE/main/tmp
+          mkdir -p $GITHUB_WORKSPACE/do-applications/ia-apps/$IA_GH_REPO_NAME
+          cp -f $GITHUB_WORKSPACE/main/tmp/helm-values.yaml $GITHUB_WORKSPACE/do-applications/ia-apps/$IA_GH_REPO_NAME/helm_values.yaml
+
+      - name: Set helm chart version
+        run: |
+          #sed -i "s/helm_version.*/helm_version: \"$(yq e '.deploy.helm.releases[0].version' skaffold.yaml)\"/g" $GITHUB_WORKSPACE/do-applications/ia-apps/dev/$IA_GH_REPO_NAME/terragrunt.hcl
+          touch $GITHUB_WORKSPACE/do-applications/ia-apps/$IA_GH_REPO_NAME/chart_ver.txt
+          echo "chart_version: $(yq e '.deploy.helm.releases[0].version' skaffold.yaml)" > $GITHUB_WORKSPACE/do-applications/ia-apps/$IA_GH_REPO_NAME/chart_ver.txt
+
+      - name: Config git for check-in
+        run: |
+          cd $GITHUB_WORKSPACE/do-applications
+          git config user.email "106329816+ia-ds-bot[bot]@users.noreply.github.com"
+          git config user.name "ia-ds-bot[bot]"
+
+      - name: Commit changes to do-applications if branch exists
+        #if: ${{ steps.checkout-ci.outputs.BRANCH_EXISTS }} == "true"
+        run: |
+          cd $GITHUB_WORKSPACE/do-applications
+          git add ia-apps/$IA_GH_REPO_NAME/helm_values.yaml
+          git add ia-apps/$IA_GH_REPO_NAME/chart_ver.txt
+          git commit -am "[CI] new ref from $IA_GH_REPO_NAME"
+          git push origin HEAD:ci-$IA_GH_REPO_NAME
+
+      - name: Create PR across org if branch does not exist
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ env.IA_DS_BOT_TOKEN }}
+          TARGET_BRANCH: main
+          PR_BODY: "CI build updates"
+          PULL_REQUEST_REVIEWERS: "alexandru-talmaciu-sage"
+        run: |
+          cd $GITHUB_WORKSPACE/do-applications
+          gh pr create --title "CI update from $IA_GH_REPO_NAME" \
+             --body "$PR_BODY" \
+             --base $TARGET_BRANCH \
+             -H ci-$IA_GH_REPO_NAME

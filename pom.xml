@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.intacct.parent</groupId>
+        <artifactId>ia-parent-pom</artifactId>
+        <version>1.0.8</version>
+        <relativePath /> <!-- lookup parent from repository -->
+    </parent>
+
+    <groupId>com.intacct</groupId>
+    <artifactId>ia-ds-template-pom</artifactId>
+    <version>0.0.18-SNAPSHOT</version>
+    <name>ia-ds-template-pom</name>
+    <description>Domain Service Template POM project</description>
+    <packaging>pom</packaging>
+
+    <scm>
+        <connection>scm:git:${project.scm.url}</connection>
+        <developerConnection>scm:git:${project.scm.url}</developerConnection>
+        <url>https://github.com/intacct/ia-ds-template.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <properties>
+        <maven.compiler.version>3.1</maven.compiler.version>
+        <ia.core.fmwk.version>0.2.0-3</ia.core.fmwk.version>
+        <spring-boot-dependencies.version>2.6.6</spring-boot-dependencies.version>
+        <spring-cloud.version>2021.0.1</spring-cloud.version>
+        <maven-surefire.version>3.0.0-M5</maven-surefire.version>
+        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <!-- Import dependency management from Spring Boot -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- ia-core -->
+            <dependency>
+                <groupId>com.intacct.core</groupId>
+                <artifactId>ia-core-fmwk</artifactId>
+                <version>${ia.core.fmwk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.intacct.core</groupId>
+                <artifactId>ia-core-fmwk-test</artifactId>
+                <version>${ia.core.fmwk.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <modules>
+        <module>service</module>
+        <module>client</module>
+    </modules>
+</project>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ia-ds-template-pom</artifactId>
+        <groupId>com.intacct</groupId>
+        <version>0.0.18-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>ia-ds-template-client</artifactId>
+    <name>ia-ds-template-client</name>
+    <description>Domain Service Template Client</description>
+
+    <properties>
+        <build-helper-maven-plugin.version>3.3.0</build-helper-maven-plugin.version>
+        <clientgenerator.version>0.0.13</clientgenerator.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.intacct.core</groupId>
+            <artifactId>ia-core-fmwk</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.intacct.client.generator</groupId>
+                <artifactId>clientgenerator-maven-plugin</artifactId>
+                <version>${clientgenerator.version}</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                        </configuration>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>${build-helper-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/client/</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

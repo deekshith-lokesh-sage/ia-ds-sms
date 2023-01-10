@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  title: dummy.text
+  description: dummy text API
+  version: '1.0'
+  contact:
+    name: FirstName LastName
+    email: firstname.lastname@sage.com
+tags:
+  - name: dummy texts
+    description: dummy text description -- explain what it's for and how it's used.
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /services/dummy/text/concatenate:
+    post:
+      summary: dummy text concatenate
+      description: dummy text concatenate description - explain what it's for and how it's used.
+      tags:
+        - dummy texts
+      operationId: post-dummy-text-concatenate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dummy-text-concatenate-request'
+      responses:
+        '200':
+          description: Executed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  'ia::result':
+                    $ref: '#/components/schemas/dummy-text-concatenate-response'
+                  'ia::meta':
+                    $ref: ../../common/models/metadata.schema.yaml
+        '400':
+          $ref: '#/components/responses/400error'
+components:
+  schemas:
+    dummy-text-concatenate-request:
+      $ref: ../models/dummy.text.concatenate-request.s1.schema.yaml
+    dummy-text-concatenate-response:
+      $ref: ../models/dummy.text.concatenate-response.s1.schema.yaml
+  responses:
+    400error:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: ../../common/models/error-response.schema.yaml

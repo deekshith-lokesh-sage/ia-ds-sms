@@ -1,0 +1,206 @@
+{
+  "primarykey": [
+    "record#"
+  ],
+  "db_fieldinfo": {
+    "record#": {
+      "type": "integer"
+    },
+    "vendorid": {
+      "type": "text"
+    },
+    "status": {
+      "type": "text"
+    },
+    "name": {
+      "type": "text"
+    },
+    "name1099": {
+      "type": "text"
+    },
+    "entity": {
+      "type": "text"
+    },
+    "parentkey": {
+      "type": "integer"
+    },
+    "returntokey": {
+      "type": "integer"
+    },
+    "paytokey": {
+      "type": "integer"
+    },
+    "termskey": {
+      "type": "text"
+    },
+    "contactkey": {
+      "type": "integer"
+    },
+    "displaycontactkey": {
+      "type": "integer"
+    },
+    "accountno": {
+      "type": "text"
+    },
+    "billingtype": {
+      "type": "text"
+    },
+    "industrykey": {
+      "type": "text"
+    },
+    "vendtypekey": {
+      "type": "integer"
+    },
+    "glgrpkey": {
+      "type": "integer"
+    },
+    "taxid": {
+      "type": "text"
+    },
+    "accountlabelkey": {
+      "type": "integer"
+    },
+    "accountkey": {
+      "type": "integer"
+    },
+    "creditlimit": {
+      "type": "decimal"
+    },
+    "comments": {
+      "type": "text"
+    },
+    "form1099type": {
+      "type": "text"
+    },
+    "form1099box": {
+      "type": "text"
+    },
+    "paymentpriority": {
+      "type": "text"
+    },
+    "paydatevalue": {
+      "type": "text"
+    },
+    "totaldue": {
+      "type": "decimal",
+      "readonly": true
+    },
+    "oepriceschedkey": {
+      "type": "text"
+    },
+    "discount": {
+      "type": "decimal"
+    },
+    "oeprclstkey": {
+      "type": "integer"
+    },
+    "onetime": {
+      "type": "text"
+    },
+    "whenmodified": {
+      "type": "timestamp"
+    },
+    "onhold": {
+      "type": "text"
+    },
+    "isowner": {
+      "type": "text"
+    },
+    "donotcutcheck": {
+      "type": "text"
+    },
+    "currency": {
+      "type": "text"
+    },
+    "achenabled": {
+      "type": "text"
+    },
+    "wireenabled": {
+      "type": "text"
+    },
+    "checkenabled": {
+      "type": "text"
+    },
+    "achbankroutingnumber": {
+      "type": "text"
+    },
+    "achaccountnumber": {
+      "type": "text"
+    },
+    "achaccounttype": {
+      "type": "text"
+    },
+    "achremittancetype": {
+      "type": "text"
+    },
+    "wirebankname": {
+      "type": "text"
+    },
+    "wirebankroutingnumber": {
+      "type": "text"
+    },
+    "wireaccountnumber": {
+      "type": "text"
+    },
+    "wireaccounttype": {
+      "type": "text"
+    },
+    "pmplusremittancetype": {
+      "type": "text"
+    },
+    "pmplusemail": {
+      "type": "text"
+    },
+    "pmplusfax": {
+      "type": "text"
+    },
+    "displaytermdiscount": {
+      "type": "text"
+    },
+    "whencreated": {
+      "type": "timestamp"
+    },
+    "createdby": {
+      "type": "integer"
+    },
+    "modifiedby": {
+      "type": "integer"
+    },
+    "paymethodkey": {
+      "type": "integer"
+    },
+    "displocacctnocheck": {
+      "type": "text"
+    },
+    "vendoracctnokey": {
+      "type": "integer"
+    },
+    "paymentnotify": {
+      "type": "text"
+    },
+    "mergepaymentreq": {
+      "type": "text"
+    },
+    "offsetaccountkey": {
+      "type": "text"
+    },
+    "contactkey1099": {
+      "type": "integer"
+    },
+    "default_lead_time": {
+      "type": "integer"
+    },
+    "pymtcountrycode": {
+      "type": "text"
+    },
+    "filepaymentservice": {
+      "type": "text"
+    },
+    "retainagepercentage": {
+      "type": "integer"
+    }
+  },
+  "multientity_filters": [
+    "locationkey"
+  ]
+}

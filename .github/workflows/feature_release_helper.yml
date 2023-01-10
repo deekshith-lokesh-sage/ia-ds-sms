@@ -1,0 +1,116 @@
+name: 'Helper: releases'
+on:
+  workflow_call:
+    inputs:
+      release_type:
+        required: true
+        type: string
+        description: "Specifies the release type to create: major vs minor vs patch"
+
+jobs:
+#  basic_setup:
+#    uses: ./.github/workflows/basic_setup.yml
+#    secrets: inherit
+
+  feature_relese_branches:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Basic Setup
+        uses: ./.github/actions/basic-setup
+        with:
+          jf_username: ${{ secrets.JF_USERNAME }}
+          jf_password: ${{ secrets.JF_DS_DEPLOY_RO_PASSWORD }}
+          ia_ds_bot_app_pem: ${{ secrets.IA_DS_BOT_APP_PEM }}
+          ia_ds_bot_app_id: ${{ secrets.IA_DS_BOT_APP_ID }}
+
+      - name: Generate next major version number
+        if: ${{ inputs.release_type == 'major' }}
+        run: mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0-1-SNAPSHOT --no-transfer-progress
+
+      - name: Generate minor release version number
+        if: ${{ inputs.release_type == 'minor' }}
+        run: mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.0-1-SNAPSHOT --no-transfer-progress
+
+      - name: Generate next patch release version number
+        if: ${{ inputs.release_type == 'patch' }}
+        run: mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-1-SNAPSHOT --no-transfer-progress
+
+      - name: Generate release branch names
+        run: | 
+          export NEW_VERSION=v$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed 's/-1-SNAPSHOT//')
+          echo NEW_VERSION=${NEW_VERSION} >> $GITHUB_ENV
+          echo RELEASE_BRANCH=release/$( echo ${NEW_VERSION} | sed 's/\./_/g') >> $GITHUB_ENV
+          echo SUB_REL_BRANCH=rel_version/$( echo ${NEW_VERSION} | sed 's/\./_/g') >> $GITHUB_ENV
+          echo "New version ID is ${NEW_VERSION}"
+
+      - name: Stash the pom.xml changes for later
+        run: |
+          git add --all
+          git stash
+
+      - name: Create release and sub-release branches
+        run: |
+          git checkout -b ${{ env.RELEASE_BRANCH }}
+          git push --set-upstream origin ${{ env.RELEASE_BRANCH }}
+          git checkout -b ${{ env.SUB_REL_BRANCH }} ${{ env.RELEASE_BRANCH }}
+
+      - name: Bring the pom.xml changes into the sub-release branch
+        run: |
+          git stash apply
+          git add --all
+          git commit -m "Set the pom version for release ${{ env.NEW_VERSION }}"
+          git push --set-upstream origin ${{ env.SUB_REL_BRANCH }}
+
+      - name: Create PR to update the pom version in release branch
+        id: release-pr
+        uses: devops-infra/action-pull-request@v0.5.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          target_branch: ${{ env.RELEASE_BRANCH }}
+          title: Update pom version to ${{ env.NEW_VERSION }}-1
+          body: Update pom version to ${{ env.NEW_VERSION }}-1
+
+      - name: Cleanup git stash for patch releases
+        if: ${{ inputs.release_type == 'patch' }}
+        run: git stash clear
+
+      - name: Update the pom version in main
+        if: ${{ inputs.release_type != 'patch' }}
+        run: |
+          git checkout main
+          git stash apply
+          git stash clear
+          mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0-SNAPSHOT --no-transfer-progress
+          export MAIN_BRANCH=pom/v$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed 's/-SNAPSHOT//')
+          git stash
+          git checkout -b ${MAIN_BRANCH}
+          git stash pop
+          git add --all
+          git commit -m "Increment the pom version after creating release ${{ env.NEW_VERSION }}"
+          git push --set-upstream origin ${MAIN_BRANCH}
+
+      - name: Create PR to update the pom version in main
+        id: main-pr
+        if: ${{ inputs.release_type != 'patch' }}
+        uses: devops-infra/action-pull-request@v0.5.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          target_branch: main
+          title: Increment pom version after creating release ${{ env.NEW_VERSION }}
+          body: Increment pom version after creating release ${{ env.NEW_VERSION }}
+
+      - name: Approve and merge the PR for release branch
+        env:
+          GITHUB_TOKEN: ${{ env.IA_DS_BOT_TOKEN }}
+        run: |
+          ./.ia-ds-utils/bin/merge-pr.sh ${{ steps.release-pr.outputs.url }}
+
+      - name: Approve and merge the PR for main branch
+        if: ${{ inputs.release_type != 'patch' }}
+        env:
+          GITHUB_TOKEN: ${{ env.IA_DS_BOT_TOKEN }}
+        run: |
+          ./.ia-ds-utils/bin/merge-pr.sh ${{ steps.main-pr.outputs.url }}

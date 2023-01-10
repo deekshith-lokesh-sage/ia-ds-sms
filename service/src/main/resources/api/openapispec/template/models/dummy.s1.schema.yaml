@@ -1,0 +1,93 @@
+x-mappedTo: "dummy"
+type: "object"
+properties:
+  key:
+    x-mappedTo: "key"
+    type: "string"
+    readOnly: true
+  id:
+    x-mappedTo: "id"
+    x-mutable: false
+    type: "string"
+  name:
+    x-mappedTo: "name"
+    type: "string"
+  status:
+    x-mappedTo: "status"
+    x-mappedToValues:
+    - "active"
+    - "active non-posting"
+    - "inactive"
+    enum:
+    - "active"
+    - "activeNonPosting"
+    - "inactive"
+    type: "string"
+  taxId:
+    x-mappedTo: "taxId"
+    type: "string"
+  creditLimit:
+    x-mappedTo: "creditLimit"
+    type: "number"
+  comments:
+    x-mappedTo: "comments"
+    type: "string"
+  discountPercent:
+    x-mappedTo: "discount"
+    type: "number"
+  totalDue:
+    x-mappedTo: "totalDue"
+    type: "string"
+    readOnly: true
+  contacts:
+    type: "object"
+    properties:
+      primary:
+        x-mappedTo: "contactInfo"
+        x-object: "contact"
+        type: "object"
+        properties:
+          key:
+            x-mappedTo: "contactInfoKey"
+            type: "integer"
+            readOnly: true
+          id:
+            x-mappedTo: "contactInfo.id"
+            type: "string"
+  audit:
+    type: "object"
+    properties:
+      createdDateTime:
+        x-mappedTo: "whenCreated"
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      modifiedDateTime:
+        x-mappedTo: "whenModified"
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      createdBy:
+        x-mappedTo: "createdBy"
+        type: "integer"
+        readOnly: true
+      modifiedBy:
+        x-mappedTo: "modifiedBy"
+        type: "integer"
+        readOnly: true
+  parent:
+    x-mappedTo: "parent"
+    x-object: "dummy"
+    type: "object"
+    properties:
+      key:
+        x-mappedTo: "parentKey"
+        type: "integer"
+        readOnly: true
+      id:
+        x-mappedTo: "parent.id"
+        type: "string"
+      name:
+        x-mappedTo: "parent.name"
+        type: "string"
+        readOnly: true

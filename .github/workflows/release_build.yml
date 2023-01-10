@@ -1,0 +1,62 @@
+name: 4. Release build
+on: [workflow_dispatch]
+
+
+jobs:
+  release-build:
+    runs-on: ubuntu-latest
+    env:
+      JF_ARTIFACTORY_1: ${{ secrets.JF_ARTIFACTORY_SERVER_1 }}
+      JFROG_BUILD_STATUS: PASS
+
+    # let the job run only on release branches - to also allow main add: github.ref == 'refs/heads/main'
+    if: startsWith(github.ref, 'refs/heads/release/')
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Basic Setup
+        uses: ./.github/actions/basic-setup
+        with:
+          jf_username: ${{ secrets.JF_USERNAME }}
+          jf_password: ${{ secrets.JF_DS_DEPLOY_RO_PASSWORD }}
+          ia_ds_bot_app_pem: ${{ secrets.IA_DS_BOT_APP_PEM }}
+          ia_ds_bot_app_id: ${{ secrets.IA_DS_BOT_APP_ID }}
+
+      - name: Generate sub-release branch name
+        run: |
+          echo BASE_BRANCH=$(git branch --show-current)  >> $GITHUB_ENV
+          export NEW_VERSION=v$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed 's/-SNAPSHOT//')
+          echo NEW_VERSION=${NEW_VERSION} >> $GITHUB_ENV
+          echo REL_BRANCH=rel_build/$( echo ${NEW_VERSION} | sed 's/\./_/g') >> $GITHUB_ENV
+
+      - name: Create sub-release branch
+        run: git checkout -b ${{ env.REL_BRANCH }} ${{ env.BASE_BRANCH }}
+
+      - name: release prepare
+        env:
+          GITHUB_TOKEN: ${{ env.IA_DS_BOT_TOKEN }}
+        run: |
+          mvn -B clean release:clean release:prepare --no-transfer-progress -Darguments="-Dmaven.javadoc.skip=true -Dmaven.test.skipTests=true -Dmaven.test.skip=true -Dmaven.deploy.skip=true -DskipTests " -Dusername="ia-ds-bot[bot]" -Dpassword="$GITHUB_TOKEN"
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v1.1.3
+        with:
+          token: ${{ env.IA_DS_BOT_TOKEN }}
+          event-type: create-image
+          client-payload: '{"ref": "${{ env.NEW_VERSION }}"}'
+
+      - name: Create Pull Request
+        id: release-pr
+        uses: devops-infra/action-pull-request@v0.5.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          target_branch: ${{ env.BASE_BRANCH }}
+          title: Maven release build for ${{ env.NEW_VERSION }}
+          body: ""
+
+      - name: Approve and merge the PR for release branch
+        env:
+          GITHUB_TOKEN: ${{ env.IA_DS_BOT_TOKEN }}
+        run: |
+          ./.ia-ds-utils/bin/merge-pr.sh ${{ steps.release-pr.outputs.url }}

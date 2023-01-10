@@ -1,0 +1,40 @@
+{
+  "primarykey": [
+    "record#"
+  ],
+  "db_fieldinfo": {
+    "record#": {
+      "type": "integer"
+    },
+    "status": {
+      "type": "text"
+    },
+    "addr1": {
+      "type": "text"
+    },
+    "addr2": {
+      "type": "text"
+    },
+    "city": {
+      "type": "text"
+    },
+    "state": {
+      "type": "text"
+    },
+    "zip": {
+      "type": "text"
+    },
+    "country": {
+      "type": "text"
+    },
+    "countrycode": {
+      "type": "text"
+    },
+    "latitude": {
+      "type": "decimal"
+    },
+    "longitude": {
+      "type": "decimal"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+name: 3. Patch features release
+on: [workflow_dispatch]
+
+
+jobs:
+  patch_release:
+    # let the job run only on version tags
+    if: startsWith(github.ref, 'refs/tags/v')
+    uses: ./.github/workflows/feature_release_helper.yml
+    with:
+      release_type: patch
+    secrets: inherit
+

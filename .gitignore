@@ -1,0 +1,44 @@
+HELP.md
+target/
+logs/
+tmp/
+!service/src/main/**/target/
+!client/src/test/**/target/
+version.txt
+pem.txt
+.ia-ds-utils/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.ipr
+*.iml
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!service/src/main/**/build/
+!client/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+
+# Ignore DevSpace cache and log folder
+.devspace/
+/devspace.yaml
+/skaffold.yaml
+/project.toml

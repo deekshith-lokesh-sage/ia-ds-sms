@@ -1,0 +1,28 @@
+{
+  "objects": {
+    "contact": {
+      "revision": "s1",
+      "hash": "0",
+      "type": "ownedObject",
+      "runtimeOwner": "ia-ds-dummy"
+    },
+    "dummy": {
+      "revision": "s1",
+      "hash": "0",
+      "type": "rootObject",
+      "runtimeOwner": "ia-ds-dummy"
+    }
+  },
+  "services": {
+    "dummy": {
+      "text": {
+        "concatenate": {
+          "revision": "s1",
+          "hash": "0",
+          "type": "functionService",
+          "runtimeOwner": "ia-ds-dummy"
+        }
+      }
+    }
+  }
+}

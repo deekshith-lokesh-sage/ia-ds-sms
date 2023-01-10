@@ -1,0 +1,53 @@
+name: 5. Release complete
+on: [workflow_dispatch]
+
+
+jobs:
+  release-complete:
+    runs-on: ubuntu-latest
+    env:
+      JF_ARTIFACTORY_1: ${{ secrets.JF_ARTIFACTORY_SERVER_1 }}
+      JFROG_BUILD_STATUS: PASS
+
+    # let the job run only on release branches - to also allow main add: github.ref == 'refs/heads/main'
+    if: startsWith(github.ref, 'refs/heads/release/')
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Basic Setup
+        uses: ./.github/actions/basic-setup
+        with:
+          jf_username: ${{ secrets.JF_USERNAME }}
+          jf_password: ${{ secrets.JF_DS_DEPLOY_RO_PASSWORD }}
+          ia_ds_bot_app_pem: ${{ secrets.IA_DS_BOT_APP_PEM }}
+          ia_ds_bot_app_id: ${{ secrets.IA_DS_BOT_APP_ID }}
+
+      - name: Generate sub-branch name
+        run: |
+          export RELEASE_BRANCH=$(git branch --show-current)
+          echo RELEASE_BRANCH=${RELEASE_BRANCH}  >> $GITHUB_ENV
+          echo MERGE_BRANCH=$( echo ${RELEASE_BRANCH} | sed 's/^release/merge_rel/g') >> $GITHUB_ENV
+
+      # We take all changes from the release branch except the changes to pom.xml file(s) which are from main
+      # We place those changes into a temporary branch, then we create a PR for main commit
+      # We create an ordinary temporary branch because the release/* branches are protected against direct commits
+      - name: Prepare the changes in sub-branch
+        run: |
+          git fetch origin main
+          git checkout -b ${{ env.MERGE_BRANCH }}
+          find . -name pom.xml | xargs git checkout origin/main --   
+          git status
+          git commit -m "Complete ${{ env.RELEASE_BRANCH }}. Use the pom.xml version(s) from main."
+          git push --set-upstream origin ${{ env.MERGE_BRANCH }}
+
+      - name: Create PR to merge release files to main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr create --base main --title "Merge files from ${{ env.RELEASE_BRANCH }} to main" --body "Completing the release branch ${{ env.RELEASE_BRANCH }}"
+
+      - name: Cleanup the release branch
+        # this is not enabled yet, it only echo-es the command
+        run: |
+          echo git push origin --delete ${{ env.RELEASE_BRANCH }}

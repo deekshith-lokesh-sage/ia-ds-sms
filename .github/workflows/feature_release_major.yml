@@ -1,0 +1,12 @@
+name: 1. Major features release
+on: [workflow_dispatch]
+
+
+jobs:
+  major_release:
+    # let the job run only on main
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/feature_release_helper.yml
+    with:
+      release_type: major
+    secrets: inherit

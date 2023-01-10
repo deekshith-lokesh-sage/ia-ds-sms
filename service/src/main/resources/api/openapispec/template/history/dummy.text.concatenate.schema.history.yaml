@@ -1,0 +1,7 @@
+ia::definition:
+  methodPermissions:
+    POST:
+    - "ap/lists/vendor/create"
+s1:
+  hash: "0"
+  type: "functionService"

@@ -1,0 +1,100 @@
+{
+  "primarykey": [
+    "record#"
+  ],
+  "db_fieldinfo": {
+    "record#": {
+      "type": "integer"
+    },
+    "status": {
+      "type": "text"
+    },
+    "name": {
+      "type": "text"
+    },
+    "companyname": {
+      "type": "text"
+    },
+    "mrms": {
+      "type": "text"
+    },
+    "firstname": {
+      "type": "text"
+    },
+    "lastname": {
+      "type": "text"
+    },
+    "mi": {
+      "type": "text"
+    },
+    "printas": {
+      "type": "text"
+    },
+    "phone1": {
+      "type": "text"
+    },
+    "phone2": {
+      "type": "text"
+    },
+    "cellphone": {
+      "type": "text"
+    },
+    "pager": {
+      "type": "text"
+    },
+    "fax": {
+      "type": "text"
+    },
+    "email1": {
+      "type": "text"
+    },
+    "email2": {
+      "type": "text"
+    },
+    "url1": {
+      "type": "text"
+    },
+    "url2": {
+      "type": "text"
+    },
+    "visible": {
+      "type": "text"
+    },
+    "taxable": {
+      "type": "text"
+    },
+    "taxgroupkey": {
+      "type": "integer"
+    },
+    "mailaddrkey": {
+      "type": "integer"
+    },
+    "oepriceschedkey": {
+      "type": "text"
+    },
+    "discount": {
+      "type": "decimal"
+    },
+    "oeprclstkey": {
+      "type": "integer"
+    },
+    "taxid": {
+      "type": "text"
+    },
+    "whencreated": {
+      "type": "timestamp"
+    },
+    "whenmodified": {
+      "type": "timestamp"
+    },
+    "createdby": {
+      "type": "integer"
+    },
+    "modifiedby": {
+      "type": "integer"
+    }
+  },
+  "multientity_filters": [
+    "locationkey"
+  ]
+}

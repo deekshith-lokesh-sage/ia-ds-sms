@@ -1,0 +1,11 @@
+x-mappedTo: "__custom__"
+type: "object"
+properties:
+  text:
+    x-mappedTo: "text"
+    type: "string"
+    description: "some text"
+  otherText:
+    x-mappedTo: "otherText"
+    type: "string"
+    description: "some other text"

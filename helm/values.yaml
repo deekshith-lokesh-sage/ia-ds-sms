@@ -1,0 +1,102 @@
+# Default values for ds-template.
+appName: &app "ia-ds-template"
+#Change name and full name overrides
+nameOverride:  "ia-ds-template"
+#ReplicaCount denotes how many pods you want
+replicaCount: 1
+# namespace: "default"
+
+labels: {}
+  # app: api-xxx
+# foo: bar
+
+image:
+  repository: 827126933480.dkr.ecr.us-west-2.amazonaws.com/ia-ds-template
+  tag: v0.0.17
+  pullPolicy: IfNotPresent
+#
+# Deployment variables
+#
+deployment:
+  #
+  # deployment spec template annotations
+  #
+  annotations:
+    prometheus.io.disabled/scrape: "true"
+    prometheus.io.disabled/port: "8091"
+    prometheus.io.disabled/path: /actuator/prometheus
+  # sidecar.istio.io/status: '{"initContainers":["istio-init"],"containers":["istio-proxy"],"volumes":["istio-envoy","istio-data","istio-podinfo","istio-token","istiod-ca-cert"],"imagePullSecrets":null}'
+
+  #
+  # Enable initContainers definition
+  #
+  enableInitContainer: false
+  container:
+    name: ds-template
+    java_extra_args: -XX:+UseContainerSupport -Djdk.tls.client.protocols=TLSv1.2 -Dspring.profiles.active=default
+    env:
+      base: []
+      perEnv: []
+    ports: []
+    resources:
+      limits:
+        cpu: 4000m
+        memory: 2048Mi
+      requests:
+        cpu: 200m
+        memory: 2048Mi
+  imagePullSecrets: []
+  # - registry-secret-1
+  securityContext: {}
+#
+# RBAC
+#
+rbac:
+  create: true
+
+services:
+  mainPort: 8090
+  adminPort: 8091
+  type: ClusterIP
+#
+# Spring Cloud config properties
+#
+configmap:
+  data: |-
+    
+
+#
+# Ingress variables
+#
+gateway: istio-system/ia-ds-gateway
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: istio
+  hosts:
+    - ia-ds.dev01.us-west-2.dev.ds-dev.intacct.com
+  tls:
+    - secretName: domain-wildcard
+      hosts:
+        - ia-ds.dev01.us-west-2.dev.ds-dev.intacct.com
+
+secrets:
+  enabled: true
+  name: "ia-ds-secret"
+#
+# HPA
+#
+hpa:
+  enabled: true
+  spec:
+    scaleTargetRef:
+      apiVersion: apps/v1
+      kind: Deployment
+      name: *app
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 80
+
+prometheus:
+  enabled: true
