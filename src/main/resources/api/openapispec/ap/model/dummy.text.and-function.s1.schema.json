@@ -1,0 +1,28 @@
+{
+  "request": {
+    "mappedTo": "__custom__",
+    "fields": {
+      "text": {
+        "mappedTo": "text",
+        "type": "string",
+        "description": "some text"
+      },
+      "otherText": {
+        "mappedTo": "otherText",
+        "type": "string",
+        "description": "some other text"
+      }
+    }
+  },
+  "response": {
+    "mappedTo": "__custom__",
+    "fields": {
+      "phase": {
+        "mappedTo": "phrase",
+        "type": "string",
+        "description": "the result"
+      }
+    }
+  },
+  "httpMethods": "POST"
+}

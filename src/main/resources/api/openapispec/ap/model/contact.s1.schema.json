@@ -1,0 +1,116 @@
+{
+    "mappedTo": "contact",
+    "fields": {
+        "key": {
+            "mappedTo": "key",
+            "type": "string",
+            "readOnly": true
+        },
+        "id": {
+            "mappedTo": "id",
+            "mutable": false,
+            "type": "string"
+        },
+        "lastName": {
+            "mappedTo": "lastName",
+            "type": "string"
+        },
+        "firstName": {
+            "mappedTo": "firstName",
+            "type": "string"
+        },
+        "middleName": {
+            "mappedTo": "initial",
+            "type": "string"
+        },
+        "prefix": {
+            "mappedTo": "prefix",
+            "type": "string"
+        },
+        "email1": {
+            "mappedTo": "email1",
+            "type": "string"
+        },
+        "phone1": {
+            "mappedTo": "phone1",
+            "type": "string"
+        },
+        "companyName": {
+            "mappedTo": "companyName",
+            "type": "string"
+        },
+        "printAs": {
+            "mappedTo": "printAs",
+            "type": "string"
+        },
+        "status": {
+            "mappedTo": "status",
+            "mappedToValues": [
+                "active",
+                "inactive"
+            ],
+            "enum": [
+                "active",
+                "inactive"
+            ],
+            "type": "string"
+        }
+    },
+    "groups": {
+        "mailingAddress": {
+            "fields": {
+                "city": {
+                    "mappedTo": "mailAddress.city",
+                    "type": "string"
+                },
+                "state": {
+                    "mappedTo": "mailAddress.state",
+                    "type": "string"
+                },
+                "postCode": {
+                    "mappedTo": "mailAddress.zip",
+                    "type": "string"
+                },
+                "country": {
+                    "mappedTo": "mailAddress.country",
+                    "type": "string"
+                },
+                "addressLine1": {
+                    "mappedTo": "mailAddress.address1",
+                    "type": "string"
+                },
+                "addressLine2": {
+                    "mappedTo": "mailAddress.address2",
+                    "type": "string"
+                }
+            },
+            "audit": {
+                "fields": {
+                    "createdDateTime": {
+                        "mappedTo": "whenCreated",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "modifiedDateTime": {
+                        "mappedTo": "whenModified",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "createdBy": {
+                        "mappedTo": "createdBy",
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "modifiedBy": {
+                        "mappedTo": "modifiedBy",
+                        "type": "integer",
+                        "readOnly": true
+                    }
+                }
+            }
+        }
+    },
+    "httpMethods": "OPTIONS,GET,DELETE,PATCH,POST"
+}

@@ -1,0 +1,11 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: ds-template-dr
+spec:
+  host: ds-template-svc
+  subsets:
+    - name: v1
+      labels:
+        app: ds-template
+        version: v1

@@ -1,0 +1,28 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: app.php
+spec:
+  hosts:
+    - dev20.intacct.com
+  ports:
+    - number: 443
+      name: https
+      protocol: HTTPS
+  resolution: DNS
+  location: MESH_EXTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: proxy.db
+spec:
+  hosts:
+    - dev08.intacct.com
+#    - dev02.intacct.com
+  ports:
+    - number: 9080
+      name: tcp
+      protocol: tcp
+  resolution: DNS
+  location: MESH_EXTERNAL

@@ -1,0 +1,73 @@
+server:
+  shutdown: graceful  # enable graceful shutdown web-server side
+  port: 8090
+  servlet:
+    context-path: /${SANDBOX_NS:ia}
+
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: ds-template
+  mvc:
+    format:
+      date-time: iso
+  jmx:
+    enabled: true
+  cloud:
+    kubernetes:
+      discovery:
+        enabled: false
+      config:
+        namespace: default
+#        enable-api: true
+
+management:
+  server:
+    port: 8091
+    base-path: /
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+      show-components: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    jmx:
+      exposure:
+        include: "*"
+
+logging:
+  level:
+    root: INFO
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 120000
+        readTimeout: 120000
+
+com:
+  intacct:
+    core:
+      sandbox-namespace: ${SANDBOX_NS:}
+#      deployment-type: ${IA_CORE_DEPLOYMENT_TYPE:dev}
+      api:
+#        api-oas-root: ${IA_CORE_API_OPENAPISPEC_ROOT:/api/openapispec/}
+#        api-registry-root: ${IA_CORE_API_REGISTRY_ROOT:/api/registries/}
+        trusted-service-credential: ${TRUSTED_SERVICE_AUTHENTICATION_CREDENTIAL:ewogICJTRVJWSUNFX1NFUlZFUl9DTElFTlRfSUQiOiAiOERCODhCNUZBMTg1RC5JTlRBQ0NULmFwcC5zYWdlLmNvbSIsCiAgIlNFUlZJQ0VfU0VSVkVSX1NFQ1JFVCI6ICJWRUZwT1hORU5EaHpVM0ZqWW5Bd2EzTldiMmcyZGxSQlVXOUdSbE5VUWxrPSIsCiAgIlNFUlZJQ0VfU0VSVkVSX1BSSVZBVEVfS0VZIjogIkxTMHRMUzFDUlVkSlRpQlNVMEVnVUZKSlZrRlVSU0JMUlZrdExTMHRMUXBOU1VsRFYzZEpRa0ZCUzBKblVVTmhNMWhKVkZwWVVXZGlSa0ZZWW1aVldYbFFURGhGVGt3eFFYaEdTbTAzVVVGWlFXOVdRakJFVGtoWGNYaGxaazVHQ2k5cE5XWnpiVEZ4Yld0SVFYZEJiMWQ0VmxKWFNDdFJNa2xqVTNrMGJFWkNRbVphUkZaV1MzRkNPRUZRWjFwa1JuTnBaRlJvYm5ZemJsZEdaMEZNY0RVS01HTTBOREpuTms5T1QyMWxVa3d2UVhoNWJWRmtUMXBKVkUxc05XazJRVTl0VHl0NldHTlVkMkpPU1RSV2IyUmlXalZxYm14dldVRXpVVWxFUVZGQlFncEJiMGRCVm5ocFdEUmhVemRVVFdwa2RXMHJVekp3SzFwWFNEUXhlSEZ2TUM5TmNtVjZlRGd3VkVkT1NqVktTRmwzV0hWMVppOTZWMGtyWmpka1YzSlFDamxDUjA1SGQxWmllWGgzWjJkMmF6STBUWGMzYlc1Qk5UaFFORUoySzAxS2NtdFpOM0JSU0dGalZWUm9MM0ZxVldGWlpTOUNaMWRWZEhwcWVHd3lPRGNLU1dwUU1VeHpVVlZyWVZOVGNHRmpjR2c0ZUdwcFNGVkpWbWxtU1ZWcFpFODVSeXQySzNGeUsxVTBabWxuVm10RFVWRkViazFXWW05SU5tVnZlU3RGTUFvek16SlFRVVJLZUU0NFNTOHZZazFNVVhWb1JYSkdPVzFsVTJwc2VHRklaMmhzYjFCTk5qWXZTVVJIU0UxSFdXUlBTMnRxTmxsRmVEQkJkalIyVTFsakNtbDVSbVF2U0hVelFXdEZRWEV6ZEhwbmVVaEVlWGRDVEcxYVUyODRNRUl4VTNWNVRWZEtObEZ0U1hWclowcHFRMHcwTDNkckwweEJNMDl6V2pSdWNsY0tNVUoyYWl0VmVsUjNRa1prY0RodVZuVk9UM0UwWlhSeVdVOXNZM0ZTYWxGRGQwcEJWSEJPUlZkRmR6VTNXRXQwY21kNWRsaGxWRkpSUVRKV1dtRTFVd3BLWldWMGFsaHRVVk4zUjNVeGNtdGxNVmhMVlU1VmNEVm1PV1oyVUZkV1JISXpZazFrWW05MFFVMU5WemR2YkVzMVRGTmpkVXBpVW1KUlNrRkNRWFZVQ21aQlNuUTFabTlLZW05UGRGRktMME53U2xCVU9EZHpOVEptT1doVlFUbExaRmRxUmpKb1pXUTJVbWMyYzJoalNIWnNWWGxIV1RGM1lWWldMMmxvWlNzS2VrODVhRlp3WTBKSU0xbG9NRE5PWTFwUlNrRlJWakZyVm5SaGFqTklSVEJYYm5FMmRuUmpTRGwyYTBjeGFrZEhSbXByWWtoYWFWWjNjMFp0V2tGNFdRcG5kekpNTUc5M1V6ZFRNM0pFTkN0aWQzYzVUMW8wVGxKV2VUUk5WR1pMWkdsRmFYY3JTemh2VTNjOVBRb3RMUzB0TFVWT1JDQlNVMEVnVUZKSlZrRlVSU0JMUlZrdExTMHRMUSIsCiAgIkFVVEhPUklaQVRJT05fU0VSVkVSX1BVQkxJQ19LRVkiOiAiTFMwdExTMUNSVWRKVGlCUVZVSk1TVU1nUzBWWkxTMHRMUzBLVFVsSFpVMUJNRWREVTNGSFUwbGlNMFJSUlVKQlVWVkJRVFJIVFVGRVEwSnBRVXRDWjBkNU5FeEtaVXRKYjFWTlprTXhNRkJDVUdGRWR6aDBPVEF5VEFwRFMwNVJUbHBXV21Jd1RHcEdSbkpRYlVjM1RIUjBTVUZ5YkVGVlptOHJTVXhVZVVvelNUTTNXRW8zTldNek5VVXZWRk5PVVU1MlVtaDBaMU5zYlRoV0NqSkJWMjVuWlhsM1VWaHdNRFl6WTFWU2FWSkRhbGx3TnpSR1ZFaEtMMVE0ZG05SGRFSm9TMmRRYVZKaFpqRnVVRWRtWlZrdlpIbG5URk5RVUdGdlp6SUtjRUZKWjJkdlRsbFpTa05UY25JeWNFRm5UVUpCUVVVOUNpMHRMUzB0UlU1RUlGQlZRa3hKUXlCTFJWa3RMUzB0TFEiCn0}
+        test:
+          company-id: ${NEXTGEN_COMPANY_ID:0}
+          client-app-credential: ${NEXTGEN_CORE_AUTH_PARAM:eyJncmFudF90eXBlIjoicGFzc3dvcmQiLCJjbGllbnRfaWQiOiJkNGYyYjZiMzE4MTc0YjlhNjBhNy5JTlRBQ0NULmFwcC5zYWdlLmNvbSIsImNsaWVudF9zZWNyZXQiOiIwZjRlNzJiNzZlODg5MDYyNTVjMzRhODAwYjVlMTc3ZmNlNWYxYmE5IiwidXNlcm5hbWUiOiJBZG1pbkBNQ1BCQVNFV0lUSFVERC1kZXYzMG1haW5fTTFfVjEiLCJwYXNzd29yZCI6IkFhMTIzNDU2ISIsIkNvb2tpZSI6IklBX0FVVEhfVVNFUj1yb3kubGl1OyBYREVCVUdfU0VTU0lPTj1QSFBTVE9STV9yb3kubGl1O0RGVF9MT0NBTEU9ZW5fVVMuVVRGLTg7IElBX0FVVEhfVVNFUj1yb3kubGl1OyBYREVCVUdfU0VTU0lPTj1QSFBTVE9STV9yb3kubGl1In0}
+          php-cookies: ${PHP_COOKIES:""}
+    ds:
+      auth:
+        header-name: ${DS_HEADER_NAME:x-api-key}
+        api-key: ${DS_API_KEY:someValue}
+        secured: true
+      php-service:
+        url: ${NEXTGEN_REMOTE_SERVER:https://dev20.intacct.com/users/vcrisan/git.nxgcore}
