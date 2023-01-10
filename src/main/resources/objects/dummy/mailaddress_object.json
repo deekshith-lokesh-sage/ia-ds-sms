@@ -1,0 +1,224 @@
+{
+    "table": "mailaddress",
+    "vid": "id",
+    "printas": "Mail Address",
+    "url": {
+        "no_short_url": true
+    },
+    "module": "co",
+    "description": "List of addresses from Contact records.",
+    "global": false,
+
+    "object": [
+        "key",
+        "id",
+        "recordKey",
+        "address1",
+        "address2",
+        "city",
+        "state",
+        "zip",
+        "country",
+        "countryCode",
+        "status",
+        "latitude",
+        "longitude"
+
+    ],
+    "schema": {
+        "key": "record#",
+        "id": "record#",
+        "recordKey": "record#",
+        "address1": "addr1",
+        "address2": "addr2",
+        "city": "city",
+        "state": "state",
+        "zip": "zip",
+        "country": "country",
+        "countryCode": "countrycode",
+        "status": "status",
+        "latitude": "latitude",
+        "longitude": "longitude"
+    },
+
+    "fieldinfo": [
+        {
+            "path": "key",
+            "fullname": "Record number",
+            "desc": "Record Number",
+            "readonly": true,
+            "id": 1,
+            "type": {
+                "ptype": "integer",
+                "type": "integer",
+                "size": 8,
+                "maxlength": 8,
+                "format": "\/^[0-9]{1,15}$\/"
+            }
+        },
+        {
+            "path": "recordKey",
+            "fullname": "Record number",
+            "desc": "Record Number",
+            "readonly": true,
+            "hidden": true,
+            "id": 2,
+            "type": {
+                "ptype": "sequence",
+                "type": "integer",
+                "maxlength": 8
+            }
+        },
+        {
+            "fullname": "Address line 1",
+            "numofcols": 30,
+            "wrap": "off",
+            "desc": "Address Line 1",
+            "path": "address1",
+            "showaudit": true,
+            "id": 3,
+            "type": {
+                "ptype": "textarea",
+                "type": "text",
+                "maxlength": 255
+            }
+        },
+        {
+            "fullname": "Address line 2",
+            "numofcols": 30,
+            "wrap": "off",
+            "desc": "Address Line 2",
+            "path": "address2",
+            "showaudit": true,
+            "id": 4,
+            "type": {
+                "ptype": "textarea",
+                "type": "text",
+                "maxlength": 255
+            }
+        },
+        {
+            "fullname": "City",
+            "desc": "City",
+            "showaudit": true,
+            "path": "city",
+            "id": 5,
+            "type": {
+                "ptype": "text",
+                "type": "text",
+                "maxlength": 80
+            }
+        },
+        {
+            "fullname": "State/province",
+            "desc": "State/Province",
+            "showaudit": true,
+            "path": "state",
+            "id": 6,
+            "type": {
+                "ptype": "text",
+                "type": "text",
+                "maxlength": 40
+            }
+        },
+        {
+            "fullname": "Zip code",
+            "desc": "Zip/Postal Code",
+            "showaudit": true,
+            "path": "zip",
+            "id": 7,
+            "type": {
+                "ptype": "text",
+                "type": "text",
+                "maxlength": 30
+            }
+        },
+        {
+            "fullname": "Country",
+            "desc": "Country",
+            "showaudit": true,
+            "showInGroup": true,
+            "showInGroupFunc": ["IsISOCountryEnabled"],
+            "default": "getAddressCountryDefault(GetMyCompany())['country']",
+            "path": "country",
+            "id": 8,
+            "type": {
+                "ptype": "text",
+                "type": "text",
+                "maxlength": 60
+            }
+        },
+        {
+            "fullname": "Country code",
+            "desc": "Country code",
+            "showInGroup": true,
+            "showInGroupFunc": ["IsISOCountryEnabled"],
+            "forcerequired": false,
+            "showaudit": true,
+            "path": "countryCode",
+            "default": "IsISOCountryEnabled() ? getAddressCountryDefault(GetMyCompany())['countryCode'] : ''",
+            "id": 9,
+            "type": {
+                "ptype": "enum",
+                "type": "text",
+                "validlabels": [
+                    "United States",
+                    "UK"
+                ],
+                "validvalues": [
+                    "US",
+                    "UK"
+                ]
+            }
+        },
+        {
+            "fullname": "Status",
+            "required": false,
+            "showInGroup": true,
+            "default": "active",
+            "desc": "Active\/Inactive",
+            "path": "status",
+            "id": 10,
+            "type": {
+                "ptype": "enum",
+                "type": "text",
+                "validlabels": [
+                    "Active",
+                    "Inactive"
+                ],
+                "validvalues": [
+                    "active",
+                    "inactive"
+                ],
+                "_validivalues": [
+                    "T",
+                    "F"
+                ]
+            }
+        },
+        {
+            "fullname": "Latitude",
+            "desc": "Latitude",
+            "path": "latitude",
+            "id": 11,
+            "type": {
+                "ptype": "text",
+                "type": "decimal",
+                "maxlength": 12,
+                "format": "/^-?(?:90(?:(?:\\.0{1,8})?)|(?:[0-9]|[1-8][0-9])(?:(?:\\.[0-9]{1,8})?))$/"
+            }
+        },
+        {
+            "fullname": "Longitude",
+            "desc": "Longitude",
+            "path": "longitude",
+            "id": 12,
+            "type": {
+                "ptype": "text",
+                "type": "decimal",
+                "maxlength": 13,
+                "format": "/^-?(?:180(?:(?:\\.0{1,8})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\\.[0-9]{1,8})?))$/"
+            }
+        }
+    ]
+}

@@ -1,0 +1,67 @@
+apiVersion: skaffold/v2beta23
+kind: Config
+metadata:
+  name: ia-ds-template
+build:
+  artifacts:
+  - image: 827126933480.dkr.ecr.us-west-2.amazonaws.com/ia-ds-template
+    buildpacks:
+      builder: paketobuildpacks/builder:base
+      env: #the BP_MAVEN_BUILD_ARGUMENTS must be first, otherwise CI won't run tests and skaffold build will fail
+      - BP_MAVEN_BUILD_ARGUMENTS=-Dmaven.test.skip=true package
+      trustBuilder: true
+      projectDescriptor: project.toml
+      dependencies:
+        paths:
+        - '*'
+        ignore:
+        - .idea
+        - target
+        - .git
+      volumes:
+      - host: bindings
+        target: /platform/bindings
+        options: ro
+    hooks:
+      before:
+      - command:
+        - bash
+        - -c
+        - ./bootstrap.sh
+        os:
+        - darwin
+        - linux
+      - command:
+        - powershell.exe
+        - Command
+        - "-ExecutionPolicy Bypass"
+        - ./bootstrap.ps1
+        os:
+        - windows
+  tagPolicy:
+    gitCommit:
+      variant: Tags
+  local:
+    useBuildkit: true
+    concurrency: 1
+deploy:
+  kubectl:
+    manifests:
+    - k8s/deployment.yml
+    - k8s/config.yml
+    - k8s/ingress.yml
+    - k8s/istio/egress.yml
+profiles:
+- name: with-maven-test # this is used for CI, do not change the order of the env vars in buildpack def
+  activation:
+  - command: build
+  patches:
+  - op: replace
+    path: /build/artifacts/0/buildpacks/env/0
+    from: BP_MAVEN_BUILD_ARGUMENTS=-Dmaven.test.skip=true package
+    value: BP_MAVEN_BUILD_ARGUMENTS=-Dmaven.test.skip=true package verify
+- name: istio-enabled
+  deploy:
+    kubectl:
+      manifests:
+      - k8s/istio/istio-dr.yml

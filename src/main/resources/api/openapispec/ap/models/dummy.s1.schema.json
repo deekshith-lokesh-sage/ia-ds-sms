@@ -1,0 +1,125 @@
+{
+    "mappedTo": "dummy",
+    "fields": {
+        "key": {
+            "mappedTo": "key",
+            "type": "string",
+            "readOnly": true
+        },
+        "id": {
+            "mappedTo": "id",
+            "mutable": false,
+            "type": "string"
+        },
+        "name": {
+            "mappedTo": "name",
+            "type": "string"
+        },
+        "status": {
+            "mappedTo": "status",
+            "mappedToValues": [
+                "active",
+                "active non-posting",
+                "inactive"
+            ],
+            "enum": [
+                "active",
+                "activeNonPosting",
+                "inactive"
+            ],
+            "type": "string"
+        },
+        "taxId": {
+            "mappedTo": "taxId",
+            "type": "string"
+        },
+        "creditLimit": {
+            "mappedTo": "creditLimit",
+            "type": "number"
+        },
+        "comments": {
+            "mappedTo": "comments",
+            "type": "string"
+        },
+        "discountPercent": {
+            "mappedTo": "discount",
+            "type": "number"
+        },
+        "totalDue": {
+            "mappedTo": "totalDue",
+            "type": "string",
+            "readOnly": true
+        }
+    },
+    "groups": {
+        "contacts": {
+            "fields": {},
+            "refs": {
+                "primary": {
+                    "mappedTo": "contactInfo",
+                    "apiObject": "contact",
+                    "fields": {
+                        "key": {
+                            "mappedTo": "contactInfoKey",
+                            "type": "integer",
+                            "readOnly": true
+                        },
+                        "id": {
+                            "mappedTo": "contactInfo.id",
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "audit": {
+            "fields": {
+                "createdDateTime": {
+                    "mappedTo": "whenCreated",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "modifiedDateTime": {
+                    "mappedTo": "whenModified",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "createdBy": {
+                    "mappedTo": "createdBy",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "modifiedBy": {
+                    "mappedTo": "modifiedBy",
+                    "type": "integer",
+                    "readOnly": true
+                }
+            }
+        }
+    },
+    "refs": {
+        "parent": {
+            "mappedTo": "parent",
+            "apiObject": "dummy",
+            "fields": {
+                "key": {
+                    "mappedTo": "parentKey",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "id": {
+                    "mappedTo": "parent.id",
+                    "type": "string"
+                },
+                "name": {
+                    "mappedTo": "parent.name",
+                    "type": "string",
+                    "readOnly": true
+                }
+            }
+        }
+    },
+    "httpMethods": "OPTIONS,GET,DELETE,PATCH,POST"
+}
