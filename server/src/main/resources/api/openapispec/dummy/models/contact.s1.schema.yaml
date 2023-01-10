@@ -1,0 +1,65 @@
+x-mappedTo: "contact"
+type: "object"
+properties:
+  key:
+    x-mappedTo: "key"
+    type: "string"
+    readOnly: true
+  id:
+    x-mappedTo: "id"
+    x-mutable: false
+    type: "string"
+  lastName:
+    x-mappedTo: "lastName"
+    type: "string"
+  firstName:
+    x-mappedTo: "firstName"
+    type: "string"
+  middleName:
+    x-mappedTo: "initial"
+    type: "string"
+  prefix:
+    x-mappedTo: "prefix"
+    type: "string"
+  email1:
+    x-mappedTo: "email1"
+    type: "string"
+  phone1:
+    x-mappedTo: "phone1"
+    type: "string"
+  companyName:
+    x-mappedTo: "companyName"
+    type: "string"
+  printAs:
+    x-mappedTo: "printAs"
+    type: "string"
+  status:
+    x-mappedTo: "status"
+    x-mappedToValues:
+    - "active"
+    - "inactive"
+    enum:
+    - "active"
+    - "inactive"
+    type: "string"
+  mailingAddress:
+    type: "object"
+    properties:
+      city:
+        x-mappedTo: "mailAddress.city"
+        type: "string"
+      state:
+        x-mappedTo: "mailAddress.state"
+        type: "string"
+      postCode:
+        x-mappedTo: "mailAddress.zip"
+        type: "string"
+      country:
+        x-mappedTo: "mailAddress.country"
+        type: "string"
+      addressLine1:
+        x-mappedTo: "mailAddress.address1"
+        type: "string"
+      addressLine2:
+        x-mappedTo: "mailAddress.address2"
+        type: "string"

@@ -1,0 +1,58 @@
+# nonk8s
+apiVersion: skaffold/v2beta21
+kind: Config
+metadata:
+  name: &app-name ia-ds-template
+build:
+  artifacts:
+  - image: &app-img 827126933480.dkr.ecr.us-west-2.amazonaws.com/ia-ds-template
+    buildpacks:
+      builder: paketobuildpacks/builder:base
+      env: #the BP_MAVEN_BUILD_ARGUMENTS must be first, otherwise CI won't run tests and skaffold build will fail
+      - BP_MAVEN_BUILD_ARGUMENTS=-Dmaven.test.skip=true package
+      - BPL_JVM_THREAD_COUNT=200
+      trustBuilder: true
+      projectDescriptor: project.toml
+      dependencies:
+        paths:
+        - 'src/*'
+        ignore:
+        - etc
+        - assets
+        - .idea
+        - target
+        - .git
+        - .github
+      volumes:
+      - host: bindings
+        target: /platform/bindings
+        options: ro
+  tagPolicy:
+    gitCommit:
+      variant: Tags
+  local:
+    useBuildkit: true
+    concurrency: 1
+deploy:
+  helm:
+    releases:
+      - name: *app-name
+#        chartPath: /Users/alexandru.talmaciu/Devel/ia-helm-charts/charts/ds-boot-chart/
+        remoteChart: ia-helm/ds-boot-chart
+        version: 0.1.14
+        artifactOverrides:
+          image: *app-img  # no tag present!
+        imageStrategy:
+          helm: { }
+        recreatePods: true
+        valuesFiles:
+          - helm/values.yaml
+        setValues:
+          nameOverride: *app-name
+
+profiles:
+  - name: Local
+    deploy:
+      kubectl:
+        manifests:
+          - k8s/ia-ds-secret.yml

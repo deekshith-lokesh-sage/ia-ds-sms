@@ -1,0 +1,31 @@
+ia::definition:
+  methodPermissions:
+    GET:
+    - "inv/lists/vendor/view"
+    - "po/lists/vendor/view"
+    - "ap/lists/vendor/view"
+    POST:
+    - "inv/lists/vendor/create"
+    - "po/lists/vendor/create"
+    - "ap/lists/vendor/create"
+    PATCH:
+    - "inv/lists/vendor/edit"
+    - "po/lists/vendor/edit"
+    - "ap/lists/vendor/edit"
+    DELETE:
+    - "inv/lists/vendor/delete"
+    - "po/lists/vendor/delete"
+    - "ap/lists/vendor/delete"
+s1:
+  hash: "0"
+  type: "rootObject"
+  systemViews:
+    getAllActive:
+      revision: "s1"
+      hash: "0"
+    getWithNoCreditLimit:
+      revision: "s1"
+      hash: "0"
+    getCreatedAfter:
+      revision: "s1"
+      hash: "0"

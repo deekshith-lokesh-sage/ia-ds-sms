@@ -1,0 +1,13 @@
+ia::definition:
+  methodPermissions:
+    GET:
+    - "co/lists/contact/view"
+    POST:
+    - "co/lists/contact/create"
+    PATCH:
+    - "co/lists/contact/edit"
+    DELETE:
+    - "co/lists/contact/delete"
+s1:
+  hash: "0"
+  type: "rootObject"

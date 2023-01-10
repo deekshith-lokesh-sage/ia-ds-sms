@@ -1,0 +1,303 @@
+{
+    "table": "contact",
+    "updatetable": "contact",
+    "vid": "id",
+    "module": "co",
+    "description": "List of contacts.",
+    "auditcolumns": true,
+
+    "nexus": {
+        "mailAddress": {
+            "object": "mailaddress",
+            "relation": "MANY2ONE",
+            "field": "mailAddressKey"
+        }
+    },
+
+    "object": [
+        "key",
+        "id",
+        "companyName",
+        "prefix",
+        "firstName",
+        "lastName",
+        "initial",
+        "printAs",
+        "taxable",
+        "phone1",
+        "email1",
+        "status",
+        "whenCreated",
+        "whenModified",
+        "createdBy",
+        "modifiedBy",
+
+        "mailAddressKey",
+        "mailAddress.address1",
+        "mailAddress.address2",
+        "mailAddress.city",
+        "mailAddress.state",
+        "mailAddress.zip",
+        "mailAddress.country",
+        "mailAddress.countryCode"
+    ],
+    "schema": {
+        "key": "record#",
+        "id": "name",
+        "companyName": "companyname",
+        "prefix": "mrms",
+        "firstName": "firstname",
+        "lastName": "lastname",
+        "initial": "mi",
+        "printAs": "printas",
+        "taxable": "taxable",
+        "phone1": "phone1",
+        "email1": "email1",
+        "status": "status",
+        "whenCreated": "whencreated",
+        "whenModified": "whenmodified",
+        "createdBy": "createdby",
+        "modifiedBy": "modifiedby",
+        "mailAddressKey" : "mailaddrkey"
+    },
+
+    "fieldinfo": [
+        {
+            "path": "key",
+            "fullname": "Record number",
+            "desc": "Record Number",
+            "readonly": true,
+            "id": 1,
+            "type": {
+                "ptype": "integer",
+                "type": "integer",
+                "size": 8,
+                "maxlength": 8,
+                "format": "\/^[0-9]{1,15}$\/"
+            }
+        },
+        {
+            "fullname": "Contact name",
+            "type": {
+                "ptype": "text",
+                "type": "text",
+                "maxlength": 200,
+                "format": "/^.{0,200}$/"
+            },
+            "required": true,
+            "desc": "Unique Name to be used to identify the contact in lists",
+            "path": "id",
+            "showaudit": true,
+            "id": 2
+        },
+        {
+            "fullname": "Company name",
+            "type": {
+                "ptype": "text",
+                "type": "text",
+                "maxlength": 100
+            },
+            "desc": "Full name of the company",
+            "path": "companyName",
+            "showaudit": true,
+            "id": 4
+        },
+        {
+            "fullname": "Mr./Ms./Mrs.",
+            "type": {
+                "ptype": "text",
+                "type": "text",
+                "maxlength": 15
+            },
+            "desc": "Mr./Ms./Mrs.",
+            "path": "prefix",
+            "showaudit": true,
+            "id": 5
+        },
+        {
+            "fullname": "First name",
+            "type": {
+                "ptype": "text",
+                "type": "text",
+                "maxlength": 40
+            },
+            "desc": "First Name",
+            "path": "firstName",
+            "showaudit": true,
+            "id": 6
+        },
+        {
+            "fullname": "Last name",
+            "type": {
+                "ptype": "text",
+                "type": "text",
+                "maxlength": 40
+            },
+            "desc": "Last Name",
+            "path": "lastName",
+            "showaudit": true,
+            "id": 7
+        },
+        {
+            "fullname": "Middle name",
+            "type": {
+                "ptype": "text",
+                "type": "text",
+                "maxlength": 40
+            },
+            "desc": "Middle Name",
+            "path": "initial",
+            "showaudit": true,
+            "id": 8
+        },
+        {
+            "fullname": "Print as",
+            "type": {
+                "ptype": "text",
+                "type": "text",
+                "maxlength": 200
+            },
+            "desc": "Name as appears on official documents",
+            "path": "printas",
+            "showaudit": true,
+            "id": 9
+        },
+        {
+            "fullname": "Taxable",
+            "type": {
+                "ptype": "enum",
+                "type": "boolean",
+                "size": 5,
+                "validlabels": ["true", "false"],
+                "validvalues": ["true", "false"],
+                "_validivalues": ["T", "F"]
+            },
+            "default": "true",
+            "desc": "Taxable",
+            "path": "taxable",
+            "showInGroup": true,
+            "showaudit": true,
+            "id": 10
+        },
+        {
+            "fullname": "Primary phone",
+            "type": {
+                "ptype": "text",
+                "type": "text",
+                "maxlength": 30
+            },
+            "desc": "Primary phone",
+            "path": "phone1",
+            "showaudit": true,
+            "id": 13
+        },
+        {
+            "fullname": "Primary email address",
+            "type": {
+                "ptype": "text",
+                "type": "text",
+                "maxlength": 200,
+                "size": 40,
+                "format": "/(^$|^[_\\w\\-!#\\$%&'\\*\\+\\\\/=\\?\\^`\\{\\|}~]+(\\.[_\\w\\-!#\\$%&'\\*\\+\\\\/=\\?\\^`\\{\\|}~]+)*@([\\w\\-]+\\.)+[a-zA-Z]{2,}$)/"
+            },
+            "desc": "Primary email address",
+            "path": "email1",
+            "showaudit": true,
+            "id": 14
+        },
+        {
+            "fullname": "Status",
+            "required": false,
+            "showInGroup": true,
+            "default": "active",
+            "desc": "Active\/Inactive",
+            "path": "status",
+            "id": 15,
+            "type": {
+                "ptype": "enum",
+                "type": "text",
+                "validlabels": [
+                    "Active",
+                    "Inactive"
+                ],
+                "validvalues": [
+                    "active",
+                    "inactive"
+                ],
+                "_validivalues": [
+                    "T",
+                    "F"
+                ]
+            }
+        },
+
+        {
+            "path": "mailAddressKey",
+            "fullname": "Address record no",
+            "type" : {
+                "type": "integer"
+            },
+            "id": 19
+        },
+        {
+            "path": "whenCreated",
+            "fullname": "When created",
+            "desc": "timestamp marking last time this was created.",
+            "hidden": true,
+            "readonly": true,
+            "noapiadd": true,
+            "noapiset": true,
+            "id": 970,
+            "type": {
+                "type": "timestamp",
+                "maxlength": 22,
+                "size": 22
+            }
+        },
+        {
+            "path": "whenModified",
+            "fullname": "When modified",
+            "desc": "timestamp marking last time this was changed.",
+            "hidden": true,
+            "readonly": true,
+            "noapiadd": true,
+            "noapiset": true,
+            "id": 969,
+            "type": {
+                "type": "timestamp",
+                "maxlength": 22,
+                "size": 22
+            }
+        },
+        {
+            "path": "createdBy",
+            "fullname": "Created by",
+            "desc": "User who created this.",
+            "hidden": true,
+            "readonly": true,
+            "noapiadd": true,
+            "noapiset": true,
+            "id": 971,
+            "type": {
+                "ptype": "ptr",
+                "type": "integer",
+                "entity": "uipick"
+            }
+        },
+        {
+            "path": "modifiedBy",
+            "fullname": "Modified by",
+            "desc": "User who modified this.",
+            "hidden": true,
+            "readonly": true,
+            "noapiadd": true,
+            "noapiset": true,
+            "id": 972,
+            "type": {
+                "ptype": "ptr",
+                "type": "integer",
+                "entity": "userinfo"
+            }
+        }
+    ]
+}

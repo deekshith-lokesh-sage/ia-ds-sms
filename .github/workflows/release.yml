@@ -1,0 +1,124 @@
+name: Maven release
+on: [workflow_dispatch]
+
+
+jobs:
+  maven_release:
+    runs-on: ubuntu-latest
+    env:
+      JF_ARTIFACTORY_1: ${{ secrets.JF_ARTIFACTORY_SERVER_1 }}
+      JFROG_BUILD_STATUS: PASS
+
+# let the job run only on main or on release branches
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+          cache: 'maven'
+
+      - name: Request a temporary token for "ia-ds-bot"
+        id: ia_ds_bot_token
+        uses: machine-learning-apps/actions-app-token@0.21
+        with:
+          APP_PEM: ${{ secrets.IA_DS_BOT_APP_PEM }}
+          APP_ID: ${{ secrets.IA_DS_BOT_APP_ID }}
+
+      - name: Save the ia-ds-bot token in the current workflow's environment inside IA_DS_BOT_TOKEN variable
+        run: echo "IA_DS_BOT_TOKEN=${{ steps.ia_ds_bot_token.outputs.app_token }}" >> $GITHUB_ENV
+
+      - name: maven-settings-xml-action
+        uses: whelk-io/maven-settings-xml-action@v20
+        with:
+          repositories: >
+            [
+              {
+                "id": "central",
+                "name": "ia-release",
+                "url": "https://intacct.jfrog.io/artifactory/ia-release",
+                "snapshots": {
+                  "enabled": "false"
+                }
+              },
+              {
+                "id": "snapshots",
+                "name": "ia-snapshot",
+                "url": "https://intacct.jfrog.io/artifactory/ia-snapshot"
+              }
+            ]
+          plugin_repositories: >
+            [
+              {
+                "id": "central",
+                "name": "plugins-release",
+                "url": "https://intacct.jfrog.io/artifactory/plugins-release",
+                "snapshots": {
+                  "enabled": "false"
+                }
+              },
+              {
+                "id": "snapshots",
+                "name": "plugins-snapshot",
+                "url": "https://intacct.jfrog.io/artifactory/plugins-snapshot"
+              }
+            ]
+          servers: >
+            [
+              {
+                 "id": "central",
+                 "username": "${{ secrets.JF_USERNAME }}",
+                 "password": "${{ secrets.JF_DS_DEPLOY_RO_PASSWORD }}"
+              },
+              {
+                "id": "snapshots",
+                "username": "${{ secrets.JF_USERNAME }}",
+                "password": "${{ secrets.JF_DS_DEPLOY_RO_PASSWORD }}"
+              },
+              {
+                "id": "github",
+                "username": "ia-ds-bot[bot]",
+                "password": "${{ env.IA_DS_BOT_TOKEN }}"
+              }
+            ]
+
+      - name: Configure Git user
+        run: |
+          git config user.email "106329816+ia-ds-bot[bot]@users.noreply.github.com"
+          git config user.name "ia-ds-bot[bot]"
+
+      - name: Generate sub-release branch name
+        run: |
+          echo BASE_BRANCH=$(git branch --show-current)  >> $GITHUB_ENV
+          echo REL_BRANCH=rel_build/v_0_0_10 >> $GITHUB_ENV
+          export NEW_VERSION=v$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed 's/-SNAPSHOT//')
+          echo NEW_VERSION=${NEW_VERSION} >> $GITHUB_ENV
+          echo REL_BRANCH=rel_build/$( echo ${NEW_VERSION} | sed 's/\./_/g') >> $GITHUB_ENV
+
+      - name: Create sub-release branch
+        run: git checkout -b ${{ env.REL_BRANCH }} ${{ env.BASE_BRANCH }}
+
+      - name: release prepare
+        env:
+          GITHUB_TOKEN: ${{ env.IA_DS_BOT_TOKEN }}
+        run: |
+          mvn -B clean release:clean release:prepare --no-transfer-progress -Darguments="-Dmaven.javadoc.skip=true -Dmaven.test.skipTests=true -Dmaven.test.skip=true -Dmaven.deploy.skip=true -DskipTests "
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v1.1.3
+        with:
+          token: ${{ env.IA_DS_BOT_TOKEN }}
+          event-type: create-mvn-release
+          client-payload: '{"ref": "${{ env.NEW_VERSION }}"}'
+
+      - name: Create Pull Request
+        uses: devops-infra/action-pull-request@v0.5.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          target_branch: ${{ env.BASE_BRANCH }}
+          title: Maven release build for ${{ env.NEW_VERSION }}
+          

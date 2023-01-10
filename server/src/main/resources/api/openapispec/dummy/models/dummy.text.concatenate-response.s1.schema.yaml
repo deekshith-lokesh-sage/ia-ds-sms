@@ -1,0 +1,7 @@
+x-mappedTo: "__custom__"
+type: "object"
+properties:
+  phase:
+    x-mappedTo: "phrase"
+    type: "string"
+    description: "the result"

@@ -1,0 +1,28 @@
+title: error-response
+type: object
+description: Error response
+properties:
+  'ia::error':
+    type: object
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+      supportId:
+        type: string
+      details:
+        type: array
+        items:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            correction:
+              type: string
+example:
+  code: invalidRequest
+  message: Malformed URL
+  supportId: sQrM9%7EYdh5oDEWVb80mrn9xuHjoAAAABQ

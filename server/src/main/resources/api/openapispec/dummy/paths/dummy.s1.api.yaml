@@ -1,0 +1,166 @@
+openapi: 3.0.0
+info:
+  title: dummy
+  description: dummy API
+  version: '1.0'
+  contact:
+    name: FirstName LastName
+    email: firstname.lastname@sage.com
+tags:
+  - name: <objectEnglishNameFirstWordInitialCap>s
+    description: <objectEnglishNameFirstWordInitialCap> description -- explain what it's for and how it's used.
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /objects/dummy:
+    get:
+      summary: List <objectEnglishName>s
+      description: Returns a collection with a key, ID, and link for each <objectEnglishName>.
+      tags:
+        - <objectEnglishNameFirstWordInitialCap>s
+      operationId: get-objects-dummy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: List of dummy objects
+                properties:
+                  'ia::result':
+                    type: array
+                    items:
+                      $ref: ../../common/models/object-reference.schema.yaml
+                  'ia::meta':
+                    $ref: ../../common/models/metadata-pages.schema.yaml
+              examples:
+                List of <objectEnglishName>s: {}
+        '400':
+          $ref: '#/components/responses/400error'
+    post:
+      summary: Create a/an <objectEnglishName>
+      description: Creates a new <objectEnglishName>.
+      tags:
+        - <objectEnglishNameFirstWordInitialCap>s
+      operationId: post-objects-dummy
+      requestBody:
+        description: ''
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/dummy'
+                - $ref: '#/components/schemas/dummyRequiredProperties'
+            examples:
+              Creates a/an <objectEnglishName>: {}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                title: New dummy
+                properties:
+                  'ia::result':
+                    $ref: ../../common/models/object-reference.schema.yaml
+                  'ia::meta':
+                    $ref: ../../common/models/metadata.schema.yaml
+              examples:
+                New <objectEnglishName>: {}
+        '400':
+          $ref: '#/components/responses/400error'
+  '/objects/dummy/{key}':
+    parameters:
+      - name: key
+        description: System-assigned key for the <objectEnglishName>.
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get a/an <objectEnglishName>
+      description: Returns detailed information for a particular <objectEnglishName>.
+      tags:
+        - <objectEnglishNameFirstWordInitialCap>s
+      operationId: get-objects-dummy-key
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Details of the dummy
+                properties:
+                  'ia::result':
+                    $ref: '#/components/schemas/dummy'
+                  'ia::meta':
+                    $ref: ../../common/models/metadata.schema.yaml
+              examples:
+                Details of the <objectEnglishName>: {}
+        '400':
+          $ref: '#/components/responses/400error'
+    patch:
+      summary: Update a/an <objectEnglishName>
+      description: Updates an existing <objectEnglishName> by setting field values. Any fields not provided remain unchanged.
+      tags:
+        - <objectEnglishNameFirstWordInitialCap>s
+      operationId: patch-objects-dummy-key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/dummy'
+                - type: object
+                  properties:
+                    id:
+                      readOnly: true
+            examples:
+              Updates a/an <objectEnglishName>: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Updated dummy
+                properties:
+                  'ia::result':
+                    $ref: ../../common/models/object-reference.schema.yaml
+                  'ia::meta':
+                    $ref: ../../common/models/metadata.schema.yaml
+              examples:
+                Updated <objectEnglishName>: {}
+        '400':
+          $ref: '#/components/responses/400error'
+    delete:
+      summary: Delete a/an <objectEnglishName>
+      description: Deletes a/an <objectEnglishName>.
+      tags:
+        - <objectEnglishNameFirstWordInitialCap>s
+      operationId: delete-objects-dummy-key
+      responses:
+        '204':
+          description: No Content
+        '400':
+          $ref: '#/components/responses/400error'
+components:
+  schemas:
+    dummy:
+      $ref: ../models/dummy.s1.schema.yaml
+    dummyRequiredProperties:
+      type: object
+      required:
+        - id
+  responses:
+    400error:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: ../../common/models/error-response.schema.yaml

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.intacct.parent</groupId>
+        <artifactId>ia-parent-pom</artifactId>
+        <version>1.0.3</version>
+        <relativePath /> <!-- lookup parent from repository -->
+    </parent>
+
+    <groupId>com.intacct</groupId>
+    <artifactId>ia-ds-template</artifactId>
+    <version>0.0.13-SNAPSHOT</version>
+    <name>ia-ds-template</name>
+    <description>Domain Service Template</description>
+    <packaging>pom</packaging>
+
+    <scm>
+        <connection>scm:git:${project.scm.url}</connection>
+        <developerConnection>scm:git:${project.scm.url}</developerConnection>
+        <url>https://github.com/intacct/ia-ds-template.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <properties>
+        <jdk>11</jdk>
+        <main.java.version>11</main.java.version>
+        <maven.compiler.version>3.1</maven.compiler.version>
+        <maven.compiler.source>${main.java.version}</maven.compiler.source>
+        <maven.compiler.target>${main.java.version}</maven.compiler.target>
+        <ia.core.fmwk.version>0.0.279</ia.core.fmwk.version>
+        <spring-boot-dependencies.version>2.6.6</spring-boot-dependencies.version>
+        <spring-cloud.version>2021.0.1</spring-cloud.version>
+        <swagger-annotations-version>1.5.24</swagger-annotations-version>
+
+        <build.output.iaextra>${project.build.directory}/ia-resources</build.output.iaextra>
+        <maven-surefire.version>3.0.0-M5</maven-surefire.version>
+        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <!-- Import dependency management from Spring Boot -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- ia-core -->
+            <dependency>
+                <groupId>com.intacct.core</groupId>
+                <artifactId>ia-core-fmwk</artifactId>
+                <version>${ia.core.fmwk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.intacct.core</groupId>
+                <artifactId>ia-core-fmwk-test</artifactId>
+                <version>${ia.core.fmwk.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- SpringDoc -->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-webmvc-core</artifactId>
+                <version>${springdoc-openapi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-ui</artifactId>
+                <version>${springdoc-openapi.version}</version>
+            </dependency>
+
+            <!-- Swagger Annotations  -->
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger-annotations-version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <modules>
+        <module>server</module>
+        <module>client</module>
+    </modules>
+</project>

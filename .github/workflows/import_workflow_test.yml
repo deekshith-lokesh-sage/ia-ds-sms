@@ -1,0 +1,18 @@
+name: Import a workflow from another private repo
+on: [workflow_dispatch]
+
+jobs:
+  import_workflow:
+    runs-on: self-hosted
+    steps:
+      - name: Download the workflow we want to execute under ./.github/workflows/ (this exact path is mandatory)
+        run: |
+          mkdir -p ./.github/workflows/
+          gh api -H Accept:application/vnd.github.raw "/repos/${repository}/contents/.github/workflows/${workflow}?ref=${ref}" > ./.github/workflows/${workflow}
+        env:
+          repository: intacct/ia-ds-utils
+          ref: feature/initialize
+          workflow: feature_release_major.yml
+          GH_TOKEN: ${{ secrets.GH_PAT_IADODEPLOY_ACTION }}
+  run_import_workflow:
+    uses: ./.github/workflows/feature_release_major.yml

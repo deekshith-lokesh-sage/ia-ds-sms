@@ -1,0 +1,31 @@
+title: metadata-pages
+description: Meta data for collection response
+type: object
+allOf:
+  - $ref: ./metadata.schema.yaml
+  - type: object
+    properties:
+      start:
+        type: integer
+        description: Start Page Number
+        x-mappedTo: null
+        readOnly: true
+        example: 1
+      pageSize:
+        type: integer
+        description: Page Size
+        x-mappedTo: null
+        readOnly: true
+        example: 100
+      next:
+        type: integer
+        description: Next Page Number
+        x-mappedTo: null
+        readOnly: true
+        example: null
+      previous:
+        type: integer
+        description: Previous Page Number
+        x-mappedTo: null
+        readOnly: true
+        example: null
